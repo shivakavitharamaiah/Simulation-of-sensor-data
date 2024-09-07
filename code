@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+import random
+
+num_mines = 4
+num_workers = 15
+num_sensors = 12
+num_days = 90
+hours_per_day = 8
+
+df = pd.read_csv("dataset_1.csv")
+
+sensor_ranges = [(33, 40), (1, 65), (100, 5500), (130000, 250000), (700, 1000), (0, 200), (75, 100), (15, 65), (1.5, 8.5), (1, 5), (0, 0.5), (5, 200)]
+all_sensor_data = pd.DataFrame(columns=['sensor_id', 'date', 'worker', 'hours_worked', 'sensor_data'])
+
+for sensor in range(num_sensors):
+    sensor_data = pd.DataFrame(columns=['sensor_id', 'date', 'worker', 'hours_worked', 'sensor_data'])
+    sensor_id = f"Sensor {sensor+1}"
+    value_range = sensor_ranges[sensor]
+    
+    for index, row in df.iterrows():
+        n = row['num_hours']
+        for i in range(n):
+            date = row['Date']
+            #worker = row['letter'][i]
+            worker = row['letter'][i % len(row['letter'])]
+            hours_worked = 1
+            sensor_data = sensor_data.append({'sensor_id': sensor_id, 'date': date, 'worker': worker, 
+                                              'hours_worked': hours_worked, 
+                                              'sensor_data': np.random.uniform(*value_range)}, 
+                                             ignore_index=True)
+    
+    #all_sensor_data = all_sensor_data.append(sensor_data, ignore_index=True)
+    all_sensor_data = pd.concat([all_sensor_data, sensor_data], axis=1)
+    
+    
+
+#all_sensor_data.to_csv("all_sensor_data.csv", index=False)
+all_sensor_data.to_csv("all_sensor_data.csv", index=False)
